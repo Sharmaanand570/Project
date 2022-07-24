@@ -74,5 +74,4 @@ const getCollegeData = async function (req, res) {
 }
 
 
-
 module.exports = { createCollege, getCollegeData }
