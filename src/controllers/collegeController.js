@@ -2,10 +2,15 @@ const collegeModel = require("../models/collegeModel.js");
 const internModel = require("../models/internModel.js");
 const validator = require("../validator/validator.js");
 
+
+
+
 //=========================================== 1-Create college Api ===============================================//
+
 
 const createCollege = async function (req, res) {
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*')
         const { name, fullName, logoLink } = req.body;
         if (Object.keys(req.body).length === 0) {
             return res.status(400).send({ status: false, message: "no content in the document, please provide college details" });
@@ -14,7 +19,7 @@ const createCollege = async function (req, res) {
             if (!(validator.isValidCharacterLimit2to8(name) && validator.isValid(name))) {
                 return res.status(400).send({ status: false, message: "please provide your valid abbreviate college name, size of charctecr should be 2 to 8, e.g: iit or IIT" })
             }
-            const checkCollege = await collegeModel.findOne({ name: name.trim().toUpperCase()})
+            const checkCollege = await collegeModel.findOne({ name: name.trim().toUpperCase() })
             if (checkCollege) {
                 return res.status(400).send({ status: false, message: `college ${name} is already present` })
             }
@@ -24,7 +29,7 @@ const createCollege = async function (req, res) {
             if (!(validator.isValid(logoLink) && validator.isValidUrl(logoLink.toLowerCase()))) {
                 return res.status(400).send({ status: false, message: "please provide a valid link e.g: https://www.example.com or https://example.com " })
             }
-            const savedData = await collegeModel.create({name:name.trim().toUpperCase(), fullName:fullName.trim().toUpperCase(), logoLink:logoLink.trim().toLowerCase() });
+            const savedData = await collegeModel.create({ name: name.trim().toUpperCase(), fullName: fullName.trim().toUpperCase(), logoLink: logoLink.trim().toLowerCase() });
             return res.status(201).send({ status: true, data: savedData })
         }
         else {
@@ -35,17 +40,24 @@ const createCollege = async function (req, res) {
     }
 }
 
-//========================================= 1-Get college data Api ==============================================//
+
+
+
+
+//========================================= 3-Get college data Api ==============================================//
+
 
 const getCollegeData = async function (req, res) {
+    res.setHeader('Access-Control-Allow-Origin', '*')
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*')
         const collegeName = req.query.collegeName
         if (collegeName) {
-            const collegeData = await collegeModel.findOne({ $or:[{name: collegeName.trim().toUpperCase(), isDeleted:false},{fullName:collegeName.trim().toUpperCase(), isDeleted:false}]})
+            const collegeData = await collegeModel.findOne({ $or: [{ name: collegeName.trim().toUpperCase(), isDeleted: false }, { fullName: collegeName.trim().toUpperCase(), isDeleted: false }] })
             if (!collegeData) {
-                return res.status(404).send({ status: false, message: `college name ${collegeName} is not found`})
+                return res.status(404).send({ status: false, message: `college name ${collegeName} is not found` })
             }
-            let internData = await internModel.find({ collegeId: collegeData._id, isDeleted:false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
+            let internData = await internModel.find({ collegeId: collegeData._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
             if (Object.keys(internData).length == 0) {
                 internData = "No any Intern had Applied"
             }
@@ -53,7 +65,7 @@ const getCollegeData = async function (req, res) {
             return res.status(200).send({ status: true, data: collegeDetail })
         }
         else {
-           return res.status(400).send({ status: false, message: "please enter collegeName" })
+            return res.status(400).send({ status: false, message: "please enter collegeName" })
         }
     }
     catch (error) {
@@ -61,5 +73,6 @@ const getCollegeData = async function (req, res) {
     }
 }
 
-module.exports.createCollege = createCollege
-module.exports.getCollegeData = getCollegeData
+
+
+module.exports = { createCollege, getCollegeData }

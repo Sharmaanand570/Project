@@ -23,7 +23,7 @@ const isValidCharacterLimit2to100 = function (value) {
 }
 
 const isValidNumber = function (value) {
-  const regEx = /^\s*\+91\s([0-9]){10}\s*$/
+  const regEx = /^\s*\91([0-9]){10}\s*$/
   const result = regEx.test(value)
   return result
 }
@@ -35,11 +35,4 @@ const isValidEmail = (value) => {
   return result
 }
 
-module.exports.isValid = isValid
-module.exports.isValidUrl = isValidUrl
-module.exports.isValidCharacterLimit2to8 = isValidCharacterLimit2to8
-module.exports.isValidCharacterLimit2to100 = isValidCharacterLimit2to100
-module.exports.isValidNumber = isValidNumber
-module.exports.isValidEmail = isValidEmail
-
-
+module.exports = { isValid, isValidEmail, isValidUrl, isValidNumber, isValidCharacterLimit2to100, isValidCharacterLimit2to8 }
